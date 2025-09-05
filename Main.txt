@@ -4,8 +4,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
-local itemID = 13986787415 -- ID do item
-local buttonID = 16737495930 -- ID do botão
+local itemID = 13986787415 -- ID do Omnitrix
+local buttonID = 16737495930 -- ID do botão principal
 
 -- Função para equipar item
 local function equipItem(id)
@@ -67,8 +67,8 @@ ScreenGui.ResetOnSpawn = false
 
 -- Painel (começa invisível)
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 220, 0, 160)
-MainFrame.Position = UDim2.new(0.5, -110, 0.5, -80)
+MainFrame.Size = UDim2.new(0, 220, 0, 200)
+MainFrame.Position = UDim2.new(0.5, -110, 0.5, -100)
 MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 MainFrame.BorderSizePixel = 0
 MainFrame.Visible = false
@@ -92,7 +92,7 @@ Title.Font = Enum.Font.GothamBold
 Title.TextSize = 16
 Title.Parent = MainFrame
 
--- Botão XRL8 (texto azul)
+-- Botão XRL8 (azul)
 local Xrl8Button = Instance.new("TextButton")
 Xrl8Button.Size = UDim2.new(0, 180, 0, 40)
 Xrl8Button.Position = UDim2.new(0.5, -90, 0, 50)
@@ -116,6 +116,30 @@ Xrl8Button.MouseButton1Click:Connect(function()
     -- Executa o script
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Shadow6698/xrl8/refs/heads/main/Main.txt"))()
     -- Equipa o item de novo
+    equipItem(itemID)
+end)
+
+-- Botão Omnitrix (verde)
+local OmnitrixButton = Instance.new("TextButton")
+OmnitrixButton.Size = UDim2.new(0, 180, 0, 40)
+OmnitrixButton.Position = UDim2.new(0.5, -90, 0, 100)
+OmnitrixButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+OmnitrixButton.Text = "Equipar Omnitrix"
+OmnitrixButton.TextColor3 = Color3.fromRGB(0, 255, 0)
+OmnitrixButton.Font = Enum.Font.GothamBold
+OmnitrixButton.TextSize = 16
+OmnitrixButton.Parent = MainFrame
+
+local BtnCorner3 = Instance.new("UICorner")
+BtnCorner3.CornerRadius = UDim.new(0, 10)
+BtnCorner3.Parent = OmnitrixButton
+
+local BtnStroke3 = Instance.new("UIStroke")
+BtnStroke3.Color = Color3.fromRGB(0, 255, 0)
+BtnStroke3.Thickness = 2
+BtnStroke3.Parent = OmnitrixButton
+
+OmnitrixButton.MouseButton1Click:Connect(function()
     equipItem(itemID)
 end)
 
