@@ -1,0 +1,145 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+local itemID = 13986787415 -- ID do item
+local buttonID = 16737495930 -- ID do botão
+
+-- Função para equipar item
+local function equipItem(id)
+    local remote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear")
+    pcall(function()
+        if remote:IsA("RemoteFunction") then
+            remote:InvokeServer(id)
+        elseif remote:IsA("RemoteEvent") then
+            remote:FireServer(id)
+        end
+    end)
+end
+
+-- Equipar logo no início
+equipItem(itemID)
+
+-- Função para arrastar GUI
+local function makeDraggable(gui)
+    local dragging, dragInput, dragStart, startPos
+    local function update(input)
+        local delta = input.Position - dragStart
+        gui.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )
+    end
+
+    gui.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = gui.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    gui.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
+        end
+    end)
+end
+
+-- Criar ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ModernUI"
+ScreenGui.Parent = PlayerGui
+ScreenGui.ResetOnSpawn = false
+
+-- Painel (começa invisível)
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 220, 0, 160)
+MainFrame.Position = UDim2.new(0.5, -110, 0.5, -80)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.BorderSizePixel = 0
+MainFrame.Visible = false
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 18)
+UICorner.Parent = MainFrame
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(0, 255, 0)
+UIStroke.Thickness = 2.5
+UIStroke.Parent = MainFrame
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundTransparency = 1
+Title.Text = "Painel Moderno"
+Title.TextColor3 = Color3.fromRGB(0, 255, 0)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.Parent = MainFrame
+
+-- Botão XRL8 (texto azul)
+local Xrl8Button = Instance.new("TextButton")
+Xrl8Button.Size = UDim2.new(0, 180, 0, 40)
+Xrl8Button.Position = UDim2.new(0.5, -90, 0, 50)
+Xrl8Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Xrl8Button.Text = "xrl8"
+Xrl8Button.TextColor3 = Color3.fromRGB(0, 170, 255) -- azul
+Xrl8Button.Font = Enum.Font.GothamBold
+Xrl8Button.TextSize = 16
+Xrl8Button.Parent = MainFrame
+
+local BtnCorner2 = Instance.new("UICorner")
+BtnCorner2.CornerRadius = UDim.new(0, 10)
+BtnCorner2.Parent = Xrl8Button
+
+local BtnStroke2 = Instance.new("UIStroke")
+BtnStroke2.Color = Color3.fromRGB(0, 255, 0)
+BtnStroke2.Thickness = 2
+BtnStroke2.Parent = Xrl8Button
+
+Xrl8Button.MouseButton1Click:Connect(function()
+    -- Executa o script
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Shadow6698/xrl8/refs/heads/main/Main.txt"))()
+    -- Equipa o item de novo
+    equipItem(itemID)
+end)
+
+-- Botão de abrir/fechar
+local MinimizeButton = Instance.new("ImageButton")
+MinimizeButton.Name = "MinimizeButton"
+MinimizeButton.Image = "rbxassetid://"..buttonID
+MinimizeButton.Size = UDim2.new(0, 50, 0, 50)
+MinimizeButton.Position = UDim2.new(0, 50, 0, 50)
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MinimizeButton.Visible = true
+MinimizeButton.Parent = ScreenGui
+
+local BtnCorner = Instance.new("UICorner")
+BtnCorner.CornerRadius = UDim.new(1, 0)
+BtnCorner.Parent = MinimizeButton
+
+-- Toggle painel
+local isOpen = false
+MinimizeButton.MouseButton1Click:Connect(function()
+    isOpen = not isOpen
+    MainFrame.Visible = isOpen
+end)
+
+-- Deixar arrastável
+makeDraggable(MinimizeButton)
+makeDraggable(MainFrame)
